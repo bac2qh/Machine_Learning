@@ -19,7 +19,7 @@ import time
 plt.style.use('ggplot')
 
 
-def define_clfs_params(grid_size):
+def clfs_params(grid_size):
 
     classifiers = {'RF': RandomForestClassifier(n_estimators=50, n_jobs=-1),
         'ET': ExtraTreesClassifier(n_estimators=10, n_jobs=-1, criterion='entropy'),
@@ -149,30 +149,70 @@ def classify(X, y, models, iters, threshold, metrics,classifiers,grid):
 
     return all_models
 
-def find_best_models(results, models, d_metric):
-    columns = ['auc', 'f1', 'precision', 'recall', 'time', 'parameters']
-    rv = pd.DataFrame(index = models, columns = columns)
-    best_metric = 0
+def find_best_model_for_metric(dat_metric, results):
+    best_overall = 0
     best_models = {}
-
+    print("This is the result for {}".format(dat_metric))
     for model, iters in results.items():
-        top_intra_metric = 0
+        best_rate_so_far = 0
         best_models[model] = {}
-        for params, metrics in iters.items():
-            header = [key for key in metrics.keys()]
-            if metrics[d_metric] > top_intra_metric:
-                top_intra_metric = metrics[d_metric]
-                best_models[model]['parameters'] = params
-                best_models[model]['metrics'] = metrics
-
+        print(model)
+        for parameters, metrics in iters.items():
+            for metric, rate in metrics.items():
+                if metric == dat_metric:
+    #                 print(metric)
+    #                 print(rate)
+                    if rate > best_rate_so_far:
+                        best_rate_so_far = rate
+                        best_model = model
+                        best_parameter = parameters
+                        best_models[model]['parameters'] = parameters
+                        best_models[model]['metrics'] = metrics
+                        # print("{} is the best rate so far for model {}, parameter {}".format(best_rate_so_far, best_model, best_parameter))
         to_append = [value for value in best_models[model]['metrics'].values()]
         to_append.append(best_models[model]['parameters'])
-        rv.loc[model] = to_append
-        if top_intra_metric > best_metric:
-            best_metric = top_intra_metric
-            best_model = model, params
+        if best_rate_so_far > best_overall:
+            best_overall = best_rate_so_far
+            overall_model = model
+            overall_parameter = parameters
+        print(best_parameter)
+        print(best_rate_so_far)
+    print("And the award for overal winner goes to ... {} under {} at {}".format(overall_model, overall_parameter, best_overall))
+    print("\n")
+    return best_models
+    # print(best_rate_so_far)
 
-    return rv, best_models, (best_model, best_metric)
+def find_best_model_for_time(results):
+    best_overall = 1000
+    best_models = {}
+    print("This is the result for time")
+    for model, iters in results.items():
+        best_rate_so_far = 1000
+        best_models[model] = {}
+        print(model)
+        for parameters, metrics in iters.items():
+            for metric, rate in metrics.items():
+                if metric == "time":
+    #                 print(metric)
+    #                 print(rate)
+                    if rate < best_rate_so_far:
+                        best_rate_so_far = rate
+                        best_model = model
+                        best_parameter = parameters
+                        best_models[model]['parameters'] = parameters
+                        best_models[model]['metrics'] = metrics
+                        # print("{} is the best rate so far for model {}, parameter {}".format(best_rate_so_far, best_model, best_parameter))
+        to_append = [value for value in best_models[model]['metrics'].values()]
+        to_append.append(best_models[model]['parameters'])
+        if best_rate_so_far < best_overall:
+            best_overall = best_rate_so_far
+            overall_model = model
+            overall_parameter = parameters
+        print(best_parameter)
+        print(best_rate_so_far)
+    print("And the award for overal winner goes to ... {} under {} at {}".format(overall_model, overall_parameter, best_overall))
+    print("\n")
+    # print(best_rate_so_far)
 
 def plots(X, y, best_models,classifiers):
     xtrain, xtest, ytrain, ytest = train_test_split(X, y, test_size=0.2, random_state=0)
