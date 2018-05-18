@@ -1,0 +1,69 @@
+Read Data
+1.5/3
+I am giving you points for this but as I say in my comments,
+you were supposed to write a function to do this, which you
+should have then called in your jupyter notebook.
+
+Explore
+4.5/9
+I guess you in fact do some exploring in the notebook. But you
+did not write functions for this.
+See comments above.
+
+Preprocess
+0/6
+I dont see you doing this anywhere.
+
+Generating Features
+5/6
+For the discretize_cont_var function, instead of fixing
+the suffix of the new col name to be "_group" you should
+have the function take in the suffix as an argument.
+For the binary variable case/dummies, your function should
+follow the same kind of steps you do for discretize_cont_var,
+where you add the new column to the input dataframe.
+Consistency is always good!
+
+Classifier
+1.5/3
+See comments above
+
+Evaluation
+1.5/3
+See comments above
+
+Notebook:
+3/10
+The notebook submitted is extremely sloppy and does not present
+your findings in a coherent manner. It is not enough to just
+splat out plots in the cells and other random things like
+a stream of falses without any discussion on what youre doing
+what you've discovered, etc.:
+"False
+ False
+ False
+ False
+ False
+ False
+ False
+ False
+ False
+ False
+ False
+ False
+ False"
+In fact it seems the only thing youve reported is the bit on
+precision/recall at the very end of the notebook.
+It is not enough to say that "accuracy, precision and recall are good metrics". Why are they good
+metrics? It is okay if you're not sure. But these are important
+things to think about, and we want you to practice
+asking yourself these questions.
+
+Total:
+17/40
+I think you misunderstood the assignment. A big chunk of the
+assignment was to write functions that you will be able to use
+for processing new datasets going forward. Yes, there was also
+a component for doing the same kind of data exploration you did
+for assigment 1 and for fitting a classifier to the data + evaluating it so I can give you some
+points.
