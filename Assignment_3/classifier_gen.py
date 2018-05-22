@@ -7,7 +7,7 @@ from sklearn.svm import LinearSVC
 from sklearn.cross_validation import train_test_split
 from sklearn.linear_model import LogisticRegression, Perceptron, SGDClassifier, OrthogonalMatchingPursuit, RandomizedLogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier, GradientBoostingClassifier, AdaBoostClassifier
+from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier, GradientBoostingClassifier, AdaBoostClassifier, BaggingClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.grid_search import ParameterGrid
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, precision_recall_curve
@@ -30,7 +30,8 @@ def clfs_params(grid_size):
         'NB': GaussianNB(),
         'DT': DecisionTreeClassifier(),
         'SGD': SGDClassifier(loss="hinge", penalty="l2"),
-        'KNN': KNeighborsClassifier(n_neighbors=3)
+        'KNN': KNeighborsClassifier(n_neighbors=3),
+        'BAG': BaggingClassifier(n_jobs=-1)
             }
 
     large_grid = {
@@ -43,7 +44,8 @@ def clfs_params(grid_size):
     'NB' : {},
     'DT': {'criterion': ['gini', 'entropy'], 'max_depth': [1,5,10,20,50,100], 'max_features': ['sqrt','log2'],'min_samples_split': [2,5,10]},
     'SVM' :{'C' :[0.00001,0.0001,0.001,0.01,0.1,1,10],'kernel':['linear']},
-    'KNN' :{'n_neighbors': [1,5,10,25,50,100],'weights': ['uniform','distance'],'algorithm': ['auto','ball_tree','kd_tree']}
+    'KNN' :{'n_neighbors': [1,5,10,25,50,100],'weights': ['uniform','distance'],'algorithm': ['auto','ball_tree','kd_tree']},
+    'BAG': {'n_estimators': [1,10,100,1000,1000], 'max_samples': [10,100,1000], 'max_features': [1,5,10]}
            }
 
     small_grid = {
@@ -55,8 +57,9 @@ def clfs_params(grid_size):
     'GB': {'n_estimators': [10,100], 'learning_rate' : [0.001,0.1,0.5],'subsample' : [0.1,0.5,1.0], 'max_depth': [5,50]},
     'NB' : {},
     'DT': {'criterion': ['gini', 'entropy'], 'max_depth': [1,5,10,20,50,100], 'max_features': ['sqrt','log2'],'min_samples_split': [2,5,10]},
-    'SVM' :{'C' :[0.00001,0.0001,0.001,0.01,0.1,1,10],'kernel':['linear']},
-    'KNN' :{'n_neighbors': [1,5,10,25,50,100],'weights': ['uniform','distance'],'algorithm': ['auto','ball_tree','kd_tree']}
+    'SVM' :{'C' :[0.1, 1, 10],'kernel':['linear']},
+    'KNN' :{'n_neighbors': [1,5,10,25,50,100],'weights': ['uniform','distance'],'algorithm': ['auto','ball_tree','kd_tree']},
+    'BAG': {'n_estimators': [10, 100], 'max_samples': [10, 100], 'max_features': [1, 5]}
            }
 
     test_grid = {
@@ -69,7 +72,8 @@ def clfs_params(grid_size):
     'NB' : {},
     'DT': {'criterion': ['gini'], 'max_depth': [1], 'max_features': ['sqrt'],'min_samples_split': [10]},
     'SVM' :{'C' :[0.01],'kernel':['linear']},
-    'KNN' :{'n_neighbors': [5],'weights': ['uniform'],'algorithm': ['auto']}
+    'KNN' :{'n_neighbors': [5],'weights': ['uniform'],'algorithm': ['auto']},
+    'BAG': {'n_estimators': [10], 'max_samples': [5], 'max_features': [5]}
            }
 
     if (grid_size == 'large'):
